@@ -20,57 +20,85 @@ import Layout from '../views/layout/Layout'
   }
  **/
 export const constantRouterMap = [
-  { path: '/login', component: _import('login/index'), hidden: true },
-  { path: '/404', component: _import('404'), hidden: true },
-
   {
-    path: '/',
+    path: '/login',
+    component: _import('login/index'),
+    hidden: true
+  }, {
+    path: '/404',
+    component: _import('404'),
+    hidden: true
+  }, {
+    path: '',
     component: Layout,
-    redirect: '/dashboard',
-    name: 'Dashboard',
-    hidden: true,
+    redirect: 'dashboard',
+    name: '首页',
+    meta: { title: '', icon: 'example' },
     children: [{
+      name: '首页',
       path: 'dashboard',
-      component: _import('dashboard/index')
+      component: _import('dashboard/index'),
+      meta: { title: '首页', icon: 'dashboard' }
     }]
-  },
-
-  {
-    path: '/example',
+  }, {
+    path: '/test',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: _import('table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: _import('tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
-
-  {
+    redirect: '/test/first',
+    name: 'test',
+    meta: { title: '测试', icon: 'example' },
+    children: [{
+      path: 'first',
+      name: 'first',
+      component: _import('test/first'),
+      meta: { title: '测试1', icon: 'table' }
+    }, {
+      path: 'second',
+      name: 'second',
+      component: _import('test/second'),
+      meta: { title: '测试2', icon: 'tree' }
+    }, {
+      path: 'third',
+      name: 'third',
+      component: _import('test/third'),
+      meta: { title: '测试3', icon: 'tree' }
+    }, {
+      path: 'forth',
+      name: 'forth',
+      component: _import('test/forth'),
+      meta: { title: '测试4', icon: 'tree' }
+    }]
+  }, {
+    path: '/ex',
+    component: Layout,
+    redirect: '/ex/table',
+    name: '举例',
+    meta: { title: '举例', icon: 'example' },
+    children: [{
+      path: 'table',
+      name: '表格',
+      component: _import('table/index'),
+      meta: { title: '表格', icon: 'table' }
+    }, {
+      path: 'tree',
+      name: '树',
+      component: _import('tree/index'),
+      meta: { title: '树', icon: 'tree' }
+    }]
+  }, {
     path: '/form',
     component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: _import('form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
+    children: [{
+      path: 'index',
+      name: '报表',
+      component: _import('form/index'),
+      meta: { title: '报表', icon: 'form' }
+    }]
   },
-
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
 ]
 
 export default new Router({

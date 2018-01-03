@@ -20,7 +20,6 @@
 
 <style scoped>
   .app-main{
-    height: 100vh;
     background-color: rgba(240, 242, 245, 0.31)
   }
 </style>
