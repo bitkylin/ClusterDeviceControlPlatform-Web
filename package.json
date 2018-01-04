@@ -13,15 +13,15 @@
     "test": "npm run lint"
   },
   "dependencies": {
-    "axios": "0.17.1",
+    "axios": "^0.17.1",
     "echarts": "^3.8.5",
-    "element-ui": "2.0.8",
-    "js-cookie": "2.2.0",
+    "element-ui": "^2.0.10",
+    "js-cookie": "^2.2.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
-    "vue": "2.5.10",
-    "vue-router": "3.0.1",
-    "vuex": "3.0.1"
+    "vue": "^2.5.10",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "7.2.3",

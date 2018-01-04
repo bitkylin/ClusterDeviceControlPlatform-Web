@@ -19,7 +19,7 @@
         <div class="content">50</div>
       </el-card>
       <div id="outline-echarts-pie-container">
-        <div id="outline-echarts-pie"></div>
+        <div id="device-group-outline-pie"></div>
       </div>
     </div>
     <div class="block">
@@ -55,7 +55,7 @@
       return {
         value8: 0,
         option: 1,
-        myChart: 1
+        myChartPie: 1
       }
     },
     computed: {
@@ -76,7 +76,7 @@
         let value = (Math.random() * 100).toFixed(0) - 0
         if (value > 20) value = '99'
         this.option.series[0].data[0].value = value
-        this.myChart.setOption(this.option, true)
+        this.myChartPie.setOption(this.option, true)
       }
     },
     mounted: function() {
@@ -93,7 +93,7 @@
           }
         ]
       }
-      this.myChart = echarts.init(document.getElementById('outline-echarts-pie'))
+      this.myChartPie = echarts.init(document.getElementById('device-group-outline-pie'))
       setInterval(this.doky, 2000)
     }
   }
@@ -178,7 +178,7 @@
     height: 150px;
   }
 
-  #outline-echarts-pie-container #outline-echarts-pie {
+  #outline-echarts-pie-container #device-group-outline-pie {
     max-width: 250px;
     width: 250px;
     height: 100%;

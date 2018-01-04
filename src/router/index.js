@@ -26,19 +26,57 @@ export const constantRouterMap = [
     hidden: true
   }, {
     path: '/404',
-    component: _import('404'),
+    component: _import('page404/1'),
+    hidden: true
+  }, {
+    path: '/401',
+    component: _import('page404/2'),
     hidden: true
   }, {
     path: '',
     component: Layout,
     redirect: 'dashboard',
-    name: '首页',
+    name: 'dashboardTop',
     meta: { title: '', icon: 'example' },
     children: [{
-      name: '首页',
+      name: 'dashboard',
       path: 'dashboard',
       component: _import('dashboard/index'),
       meta: { title: '首页', icon: 'dashboard' }
+    }]
+  }, {
+    path: '/devicegroup',
+    component: Layout,
+    redirect: '/devicegroup/outline',
+    name: 'deviceGroup',
+    meta: { title: '设备组', icon: 'example' },
+    children: [{
+      path: 'outline',
+      name: 'deviceGroupOutline',
+      component: _import('devicegroup/DeviceGroupOutline'),
+      meta: { title: '设备组概览', icon: 'dashboard' }
+    }, {
+      path: 'single',
+      name: 'deviceGroupOutline1',
+      component: _import('devicegroup/SingleGroupOutline'),
+      meta: { title: '单组概览', icon: 'dashboard' }
+    }]
+  }, {
+    path: '/tcp',
+    component: Layout,
+    redirect: '/tcp/chart',
+    name: 'tcp',
+    meta: { title: 'TCP接口模块', icon: 'example' },
+    children: [{
+      path: 'chart',
+      name: 'tcpChart',
+      component: _import('tcp/Chart'),
+      meta: { title: '图示', icon: 'table' }
+    }, {
+      path: 'table',
+      name: 'tcpTable',
+      component: _import('tcp/Table'),
+      meta: { title: '详情', icon: 'table' }
     }]
   }, {
     path: '/test',
@@ -68,33 +106,6 @@ export const constantRouterMap = [
       meta: { title: '测试4', icon: 'tree' }
     }]
   }, {
-    path: '/ex',
-    component: Layout,
-    redirect: '/ex/table',
-    name: '举例',
-    meta: { title: '举例', icon: 'example' },
-    children: [{
-      path: 'table',
-      name: '表格',
-      component: _import('table/index'),
-      meta: { title: '表格', icon: 'table' }
-    }, {
-      path: 'tree',
-      name: '树',
-      component: _import('tree/index'),
-      meta: { title: '树', icon: 'tree' }
-    }]
-  }, {
-    path: '/form',
-    component: Layout,
-    children: [{
-      path: 'index',
-      name: '报表',
-      component: _import('form/index'),
-      meta: { title: '报表', icon: 'form' }
-    }]
-  },
-  {
     path: '*',
     redirect: '/404',
     hidden: true
