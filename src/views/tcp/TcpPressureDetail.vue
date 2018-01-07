@@ -31,7 +31,7 @@
       prop="tag"
       label="工作状态"
       width="120"
-      :filters="[{ text: '正常', value: '正常' }, { text: '忙碌', value: '忙碌' }, { text: '极限', value: '极限' }]"
+      :filters="[{ text: '正常', value: '正常' }, { text: '忙碌', value: '忙碌' }, { text: '过载', value: '过载' }]"
       :filter-method="filterTag"
       filter-placement="bottom-end">
       <template slot-scope="scope">
@@ -45,17 +45,33 @@
 </template>
 
 <script>
+  import { tcpOutline } from '@/api/tcp'
+  import { Message } from 'element-ui'
+
   export default {
-    computed: {
-      tableData() {
+    data: function() {
+      return {
+        itemCount: '待获取',
+        channelItems: null,
+        tableData: null
+      }
+    },
+    name: 'tcpPressureDetail',
+    methods: {
+      filterTag(value, row) {
+        return row.tagMsg === value
+      },
+      calculateTableData() {
         const tableData = []
-        for (let i = 1; i <= 100; i++) {
-          const msgCount = (Math.random() * 800).toFixed(0)
-          const timeCost = (msgCount * 0.3).toFixed(2)
-          const process = (msgCount * 100 / 500).toFixed(0)
+        for (let i = 0; i < this.itemCount; i++) {
+          const item = this.channelItems[i]
+          const msgCount = item.count
+          const timeCost = Math.round(msgCount * 0.3)
+          let process = Math.round(msgCount * 100 / 500)
+          process = process > 100 ? 100 : process
           if (msgCount < 100) {
             tableData.push({
-              id: i,
+              id: item.id,
               msgCount: msgCount,
               timeCost: timeCost,
               tag: '',
@@ -65,17 +81,17 @@
             })
           } else if (msgCount > 500) {
             tableData.push({
-              id: i,
+              id: item.id,
               msgCount: msgCount,
               timeCost: timeCost,
               tag: 'danger',
-              tagMsg: '极限',
+              tagMsg: '过载',
               process: process,
               processStatus: 'exception'
             })
           } else {
             tableData.push({
-              id: i,
+              id: item.id,
               msgCount: msgCount,
               timeCost: timeCost,
               tag: 'warning',
@@ -88,10 +104,18 @@
         return tableData
       }
     },
-    methods: {
-      filterTag(value, row) {
-        return row.tagMsg === value
-      }
+    mounted: function() {
+      const vm = this
+      setTimeout(function() {
+        tcpOutline().then(response => {
+          vm.itemCount = response.data.activatedCount + response.data.inactivatedCount
+          vm.channelItems = response.data.channelItems
+          vm.tableData = vm.calculateTableData()
+        }).catch(error => {
+          console.log('error', error)
+          Message.error('错误' + error)
+        })
+      }, 500)
     }
   }
 </script>

@@ -3,43 +3,54 @@
     <!--<div id="outline-echarts-pie1"></div>-->
     <div id="outline-container">
       <el-card class="box-card-outline">
-        <div class="card-header">设备总数</div>
-        <div class="content">100</div>
+        <div class="header">设备总数</div>
+        <div class="content">{{deviceCount}}</div>
       </el-card>
       <el-card class="box-card-outline">
-        <div class="card-header">未充电</div>
-        <div class="content">30</div>
+        <div class="header">使用中</div>
+        <div class="content">{{usingCount}}</div>
       </el-card>
       <el-card class="box-card-outline">
-        <div class="card-header">充电中</div>
-        <div class="content">20</div>
+        <div class="header">充电中</div>
+        <div class="content">{{chargingCount}}</div>
       </el-card>
       <el-card class="box-card-outline">
-        <div class="card-header">已充满</div>
-        <div class="content">50</div>
+        <div class="header">已充满</div>
+        <div class="content">{{fullCount}}</div>
+      </el-card>
+      <el-card class="box-card-outline">
+        <div class="header">未初始化</div>
+        <div class="content">{{uninitCount}}</div>
       </el-card>
       <div id="outline-echarts-pie-container">
         <div id="device-group-outline-pie"></div>
       </div>
     </div>
-    <div class="block">
+    <div class="group-id-selecter">
       <el-slider
-        v-model="value8"
+        v-model="groupId"
         show-input>
       </el-slider>
     </div>
-    <div id="item-container">
+    <div id="item-container" v-if="deviceItems">
       <!--服务器连接状态-->
-      <el-card :key="item.no" v-for="item in arr"
-               v-bind:class="[item.work<=1 ? 'work-status-great' : item.work>3? 'work-status-error':'work-status-warn']"
-               :body-style="{ padding: '10px' }" class="box-card-item">
-        <div class="card-header">{{item.no}}</div>
-        <div class="content">
-          <i v-if="item.charge == 0" class="iconfont icon-kongxianzhong"></i>
-          <i v-else-if="item.charge == 1" class="iconfont icon-laodonggaizao"></i>
-          <i v-else-if="item.charge == 2" class="iconfont icon-Ankerwebicon-"></i>
-          <i v-else-if="item.charge == 3" class="iconfont icon-icon311"></i>
+      <el-card :key="item.id" v-for="item in deviceItems"
+               v-bind:class="item.workStatus === 1 ? 'work-status-great' : 'work-status-error'"
+               :body-style="{ padding: '0' }" class="box-card-outline-item">
+        <div class="header" v-on:click="test">{{item.id}}号</div>
+        <div class="content" v-if="statusItems[item.id-1]==='show'" v-on:click="itemCardClicked(item.id)">
+          <i v-if="item.chargeStatus === 0" class="iconfont icon-kongxianzhong"></i>
+          <i v-else-if="item.chargeStatus=== 1" class="iconfont icon-laodonggaizao"></i>
+          <i v-else-if="item.chargeStatus === 2" class="iconfont icon-icon311"></i>
+          <i v-else-if="item.chargeStatus === 3" class="iconfont icon-Ankerwebicon-"></i>
           <i v-else class="iconfont icon-cuowu"></i>
+        </div>
+        <div class="content" v-else-if="statusItems[item.id-1]==='hover'" v-on:click="itemCardClicked(item.id)">
+          <div>{{item.chargeStatusDescription}}</div>
+          <div>{{item.workStatusDescription}}</div>
+        </div>
+        <div class="content" v-else>
+          <div>待获取</div>
         </div>
       </el-card>
     </div>
@@ -48,38 +59,97 @@
 
 <script>
   import echarts from 'echarts'
+  import { singleGroupDeviceData, singleGroupDeviceCount } from '@/api/data'
+  import { Message } from 'element-ui'
 
   export default {
-    name: 'forth',
+    name: 'singleDeviceOutline',
     data() {
       return {
-        value8: 0,
-        option: 1,
-        myChartPie: 1
-      }
-    },
-    computed: {
-      arr: function() {
-        const res = []
-        for (let i = 1; i <= 100; i++) {
-          const charge = (Math.random() * 4).toFixed(0)
-          const work = (Math.random() * 4).toFixed(0)
-          const r = { 'no': i, 'charge': charge, 'work': work }
-          console.log(r)
-          res.push(r)
-        }
-        return res
+        // 当前设备组号
+        groupId: 0,
+        // 单组中的设备数量
+        deviceCount: 0,
+        usingCount: 0,
+        chargingCount: 0,
+        fullCount: 0,
+        uninitCount: 0,
+        // 待处理消息数量
+        msgCount: 0,
+        // card item 的当前状态，用户操作卡片时，状态改变
+        statusItems: [],
+        // 「HTTP获取」设备 items 详细信息集合
+        deviceItems: [],
+        option: '待获取',
+        myChartPieOutline: '待获取'
       }
     },
     methods: {
-      doky: function() {
-        let value = (Math.random() * 100).toFixed(0) - 0
-        if (value > 20) value = '99'
-        this.option.series[0].data[0].value = value
-        this.myChartPie.setOption(this.option, true)
+      test() {
+        Message.success('fafds')
+      },
+      // 卡片点击回调
+      itemCardClicked(id) {
+        console.log('itemCardClicked')
+        const status = this.statusItems[id - 1]
+        if (status === 'show') {
+          this.$set(this.statusItems, id - 1, 'hover')
+        } else {
+          this.$set(this.statusItems, id - 1, 'show')
+        }
+      },
+      // 更新显示用 items
+      initCardStatus() {
+        if (this.statusItems.length === 0) {
+          for (let i = 0; i < this.deviceCount; i++) {
+            this.statusItems.push('show')
+          }
+        }
+      },
+      // 获取 Item 的背景颜色
+      obtainItemBackround(id) {
+        return id === 1 ? 'work-status-great' : 'work-status-error'
+      },
+
+      // 「HTTP」获取设备数量
+      getDeviceCount() {
+        // 调取HTTP API获取数据
+        singleGroupDeviceCount().then(response => {
+          Message.success('HTTP API调用成功「1」')
+          this.deviceCount = response.data
+          this.getDeviceDetail()
+        }).catch(error => {
+          Message.error('错误信息1：' + error + '稍后重新获取')
+          setTimeout(this.getDeviceCount, 10000)
+        })
+      },
+      // 「HTTP」获取设备详细信息
+      getDeviceDetail() {
+        // 调取HTTP API获取数据
+        singleGroupDeviceData(this.groupId).then(response => {
+          Message.success('HTTP API调用成功「2」')
+          const deviceGroupItems = response.data.deviceGroupItems[0]
+          this.deviceCount = deviceGroupItems.deviceCount
+          this.usingCount = deviceGroupItems.usingCount
+          this.chargingCount = deviceGroupItems.chargingCount
+          this.fullCount = deviceGroupItems.fullCount
+          this.uninitCount = deviceGroupItems.uninitCount
+          this.msgCount = deviceGroupItems.msgCount
+          this.deviceItems = deviceGroupItems.items
+          this.option.series[0].data[0].value = this.msgCount
+          this.myChartPieOutline.setOption(this.option)
+          // 激活设备items卡片的数据显示
+          this.initCardStatus()
+          setTimeout(this.getDeviceDetail, 2000)
+        }).catch(error => {
+          console.log(error)
+          Message.error('错误信息2：' + error + '稍后重新获取')
+          setTimeout(this.getDeviceDetail, 10000)
+        })
       }
     },
     mounted: function() {
+      this.getDeviceCount()
       this.option = {
         series: [
           {
@@ -93,15 +163,109 @@
           }
         ]
       }
-      this.myChartPie = echarts.init(document.getElementById('device-group-outline-pie'))
-      setInterval(this.doky, 2000)
+      this.myChartPieOutline = echarts.init(document.getElementById('device-group-outline-pie'))
     }
   }
 </script>
 
-<style scoped>
+<style rel="stylesheet/scss" lang="scss" scoped>
+
+  #main-container {
+    font-weight: bold;
+    padding: 0px 10px;
+  }
+
+  /****************** outline item **********************/
+  #outline-container {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+    .box-card-outline {
+      max-width: 250px;
+      height: 100px;
+      flex: 2 1 auto;
+      margin: 20px 10px;
+      transition: 0.3s;
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba(180, 255, 0, 0.1);
+      }
+
+      .content {
+        font-size: 130%;
+        text-align: center;
+        padding-top: 10px;
+      }
+
+      .header {
+        color: rgba(0, 0, 0, 0.51);
+        padding-bottom: 10px;
+        text-align: center;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+    }
+  }
+
+  /*********** echarts-pie ***********************/
+
+  #outline-echarts-pie-container {
+    transition: 0.3s;
+    height: 150px;
+
+    #device-group-outline-pie {
+      max-width: 250px;
+      width: 250px;
+      height: 100%;
+    }
+  }
+
+  /****************** item **********************/
+  #item-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+
+    .box-card-outline-item {
+      max-width: 150px;
+      width: 150px;
+      flex: 1 1 auto;
+      margin: 10px 0px 5px 10px;
+      transition: 0.3s;
+      cursor: pointer;
+      /*background-color: rgba(0, 227, 255, 0.07);*/
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.07);
+      }
+
+      .header {
+        color: rgba(0, 0, 0, 0.51);
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .content {
+        color: rgba(0, 0, 0, 0.65);
+        text-align: center;
+        padding-top: 10px;
+        min-height: 50px;
+
+        .iconfont {
+          font-size: 200%
+        }
+      }
+    }
+  }
+
+  /********* card item 的相关资源颜色设置 **********/
+
+  /*item 图标的颜色*/
   i {
-    color: rgba(0, 0, 0, 0.75);
+    color: rgba(0, 127, 130, 0.76);
   }
 
   i.icon-laodonggaizao {
@@ -120,104 +284,19 @@
     color: rgba(255, 0, 0, 0.75);
   }
 
-  .work-status-great {
+  /*card item 的背景颜色*/
+
+  .work-status-init {
     background-color: rgba(0, 255, 255, 0.08);
+
+  }
+
+  .work-status-great {
+    background-color: rgba(0, 255, 30, 0.09);
   }
 
   .work-status-error {
     background-color: rgba(255, 0, 0, 0.09);
   }
 
-  .work-status-warn {
-    background-color: rgba(255, 255, 0, 0.09);
-  }
-
-  #main-container {
-    font-weight: bold;
-    padding: 0px 10px;
-  }
-
-  /****************** outline item **********************/
-  #outline-container {
-    display: flex;
-    flex-flow: wrap;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);;
-  }
-
-  #outline-container .box-card-outline {
-    max-width: 250px;
-    height: 100px;
-    flex: 2 1 auto;
-    margin: 20px 10px;
-    transition: 0.3s;
-    cursor: pointer;
-  }
-
-  #outline-container .box-card-outline:hover {
-    background-color: rgba(180, 255, 0, 0.1);
-  }
-
-  #outline-container .box-card-outline .content {
-    font-size: 130%;
-    text-align: center;
-    padding-top: 10px;
-  }
-
-  #outline-container .box-card-outline .card-header {
-    color: rgba(0, 0, 0, 0.51);
-    padding-bottom: 10px;
-    text-align: center;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  }
-
-  /*********** echarts-pie ***********************/
-
-  #outline-echarts-pie-container {
-    transition: 0.3s;
-    height: 150px;
-  }
-
-  #outline-echarts-pie-container #device-group-outline-pie {
-    max-width: 250px;
-    width: 250px;
-    height: 100%;
-  }
-
-  /****************** item **********************/
-  #item-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: left;
-  }
-
-  #item-container .box-card-item {
-    max-width: 150px;
-    width: 150px;
-    flex: 1 1 auto;
-    margin: 10px 0px 5px 10px;
-    transition: 0.3s;
-    cursor: pointer;
-    /*background-color: rgba(0, 227, 255, 0.07);*/
-  }
-
-  #item-container .box-card-item:hover {
-    background-color: rgba(255, 255, 255, 0.07);
-  }
-
-  #item-container .box-card-item .card-header {
-    color: rgba(0, 0, 0, 0.51);
-    padding-bottom: 10px;
-    text-align: center;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  }
-
-  #item-container .box-card-item .content {
-    text-align: center;
-    padding-top: 10px;
-  }
-
-  #item-container .box-card-item .content .iconfont {
-    font-size: 200%
-  }
 </style>

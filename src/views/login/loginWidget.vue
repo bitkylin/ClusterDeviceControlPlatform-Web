@@ -19,12 +19,12 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
-            Sign in
+            登录
           </el-button>
         </el-form-item>
         <div id="tips">
-          <span>username: admin</span>
-          <span> password: admin</span>
+          <span>服务器状态：正常</span>
+          <span>延迟：20ms</span>
         </div>
       </el-form>
     </div>
@@ -84,7 +84,6 @@
               this.loading = false
             })
           } else {
-            console.log('error submit!!')
             return false
           }
         })

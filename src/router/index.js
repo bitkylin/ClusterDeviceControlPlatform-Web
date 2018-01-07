@@ -42,7 +42,7 @@ export const constantRouterMap = [
       name: 'dashboard',
       path: 'dashboard',
       component: _import('dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'table' }
     }]
   }, {
     path: '/devicegroup',
@@ -52,60 +52,62 @@ export const constantRouterMap = [
     meta: { title: '设备组', icon: 'example' },
     children: [{
       path: 'outline',
-      name: 'deviceGroupOutline',
-      component: _import('devicegroup/DeviceGroupOutline'),
-      meta: { title: '设备组概览', icon: 'dashboard' }
+      name: 'groupDeviceOutline',
+      component: _import('devicegroup/GroupDeviceOutline'),
+      meta: { title: '概览', icon: 'table' }
     }, {
       path: 'single',
-      name: 'deviceGroupOutline1',
+      name: 'singleDeviceOutline',
       component: _import('devicegroup/SingleGroupOutline'),
-      meta: { title: '单组概览', icon: 'dashboard' }
+      meta: { title: '单组', icon: 'table' }
     }]
   }, {
     path: '/tcp',
     component: Layout,
     redirect: '/tcp/chart',
     name: 'tcp',
-    meta: { title: 'TCP接口模块', icon: 'example' },
+    meta: { title: 'TCP接口', icon: 'example' },
     children: [{
-      path: 'chart',
-      name: 'tcpChart',
-      component: _import('tcp/Chart'),
-      meta: { title: '图示', icon: 'table' }
+      path: 'outline',
+      name: 'tcpPressureOutline',
+      component: _import('tcp/TcpPressureOutline'),
+      meta: { title: '压力概览', icon: 'table' }
     }, {
-      path: 'table',
-      name: 'tcpTable',
-      component: _import('tcp/Table'),
+      path: 'detail',
+      name: 'tcpPressureDetail',
+      component: _import('tcp/TcpPressureDetail'),
       meta: { title: '详情', icon: 'table' }
     }]
-  }, {
-    path: '/test',
-    component: Layout,
-    redirect: '/test/first',
-    name: 'test',
-    meta: { title: '测试', icon: 'example' },
-    children: [{
-      path: 'first',
-      name: 'first',
-      component: _import('test/first'),
-      meta: { title: '测试1', icon: 'table' }
-    }, {
-      path: 'second',
-      name: 'second',
-      component: _import('test/second'),
-      meta: { title: '测试2', icon: 'tree' }
-    }, {
-      path: 'third',
-      name: 'third',
-      component: _import('test/third'),
-      meta: { title: '测试3', icon: 'tree' }
-    }, {
-      path: 'forth',
-      name: 'forth',
-      component: _import('test/forth'),
-      meta: { title: '测试4', icon: 'tree' }
-    }]
-  }, {
+  },
+  // {
+  //   path: '/test',
+  //   component: Layout,
+  //   redirect: '/test/first',
+  //   name: 'test',
+  //   meta: { title: '测试', icon: 'example' },
+  //   children: [{
+  //     path: 'first',
+  //     name: 'first',
+  //     component: _import('test/first'),
+  //     meta: { title: '测试1', icon: 'table' }
+  //   }, {
+  //     path: 'second',
+  //     name: 'second',
+  //     component: _import('test/second'),
+  //     meta: { title: '测试2', icon: 'tree' }
+  //   }, {
+  //     path: 'third',
+  //     name: 'third',
+  //     component: _import('test/third'),
+  //     meta: { title: '测试3', icon: 'tree' }
+  //   }, {
+  //     path: 'forth',
+  //     name: 'forth',
+  //     component: _import('test/forth'),
+  //     meta: { title: '测试4', icon: 'tree' }
+  //   }]
+  // },
+  {
     path: '*',
     redirect: '/404',
     hidden: true
