@@ -6,3 +6,10 @@ export function serverInfoOutline() {
     method: 'get'
   })
 }
+
+export function serverAttach() {
+  return request({
+    url: '/inner/attach',
+    method: 'get'
+  })
+}

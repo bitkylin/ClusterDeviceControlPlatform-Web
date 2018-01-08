@@ -28,7 +28,7 @@
     </div>
     <div class="group-id-selecter">
       <el-slider
-        v-model="groupId"
+        v-model="selectedGroupId"
         show-input>
       </el-slider>
     </div>
@@ -37,7 +37,7 @@
       <el-card :key="item.id" v-for="item in deviceItems"
                v-bind:class="item.workStatus === 1 ? 'work-status-great' : 'work-status-error'"
                :body-style="{ padding: '0' }" class="box-card-outline-item">
-        <div class="header" v-on:click="test">{{item.id}}号</div>
+        <div class="header">{{item.id}}号</div>
         <div class="content" v-if="statusItems[item.id-1]==='show'" v-on:click="itemCardClicked(item.id)">
           <i v-if="item.chargeStatus === 0" class="iconfont icon-kongxianzhong"></i>
           <i v-else-if="item.chargeStatus=== 1" class="iconfont icon-laodonggaizao"></i>
@@ -60,14 +60,15 @@
 <script>
   import echarts from 'echarts'
   import { singleGroupDeviceData, singleGroupDeviceCount } from '@/api/data'
-  import { Message } from 'element-ui'
+  import { setTimer, touchError } from '@/utils/timer'
+  import { saveGroupId, getGroupId } from '@/utils/kyUtil'
 
   export default {
     name: 'singleDeviceOutline',
     data() {
       return {
         // 当前设备组号
-        groupId: 0,
+        selectedGroupId: getGroupId(),
         // 单组中的设备数量
         deviceCount: 0,
         usingCount: 0,
@@ -84,10 +85,13 @@
         myChartPieOutline: '待获取'
       }
     },
+    watch: {
+      // 将被选中的 GroupId 存入 Store
+      selectedGroupId: function(val, oldVal) {
+        saveGroupId(val)
+      }
+    },
     methods: {
-      test() {
-        Message.success('fafds')
-      },
       // 卡片点击回调
       itemCardClicked(id) {
         console.log('itemCardClicked')
@@ -115,19 +119,16 @@
       getDeviceCount() {
         // 调取HTTP API获取数据
         singleGroupDeviceCount().then(response => {
-          Message.success('HTTP API调用成功「1」')
           this.deviceCount = response.data
           this.getDeviceDetail()
         }).catch(error => {
-          Message.error('错误信息1：' + error + '稍后重新获取')
-          setTimeout(this.getDeviceCount, 10000)
+          touchError(this, this.getDeviceCount, error)
         })
       },
       // 「HTTP」获取设备详细信息
       getDeviceDetail() {
         // 调取HTTP API获取数据
-        singleGroupDeviceData(this.groupId).then(response => {
-          Message.success('HTTP API调用成功「2」')
+        singleGroupDeviceData(this.selectedGroupId).then(response => {
           const deviceGroupItems = response.data.deviceGroupItems[0]
           this.deviceCount = deviceGroupItems.deviceCount
           this.usingCount = deviceGroupItems.usingCount
@@ -140,11 +141,8 @@
           this.myChartPieOutline.setOption(this.option)
           // 激活设备items卡片的数据显示
           this.initCardStatus()
-          setTimeout(this.getDeviceDetail, 2000)
         }).catch(error => {
-          console.log(error)
-          Message.error('错误信息2：' + error + '稍后重新获取')
-          setTimeout(this.getDeviceDetail, 10000)
+          touchError(this, this.getDeviceDetail, error)
         })
       }
     },
@@ -164,6 +162,7 @@
         ]
       }
       this.myChartPieOutline = echarts.init(document.getElementById('device-group-outline-pie'))
+      setTimer(this.getDeviceDetail, 2000)
     }
   }
 </script>
@@ -189,9 +188,10 @@
       margin: 20px 10px;
       transition: 0.3s;
       cursor: pointer;
+      background-color: rgba(0, 227, 230, 0.07);
 
       &:hover {
-        background-color: rgba(180, 255, 0, 0.1);
+        background-color: rgba(255, 255, 255, 0.07);
       }
 
       .content {

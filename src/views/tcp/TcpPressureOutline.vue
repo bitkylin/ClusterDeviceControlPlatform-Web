@@ -45,7 +45,7 @@
 <script>
   import echarts from 'echarts'
   import { tcpOutline } from '@/api/tcp'
-  import { Message } from 'element-ui'
+  import { setTimer, touchError } from '@/utils/timer'
 
   export default {
     name: 'tcpPressureOutline',
@@ -78,15 +78,7 @@
       this.myChartBarDetail = echarts.init(document.getElementById('tcp-traffic-outline-bar'))
       this.myChartBarDetail.setOption(this.initBarDetail('random'))
       window.onresize = () => this.myChartBarDetail.resize()
-      const vm = this
-      setTimeout(function() {
-        tcpOutline().then(response => {
-          vm.processRemoteData(response.data)
-        }).catch(error => {
-          console.log('error', error)
-          Message.error('错误' + error)
-        })
-      }, 500)
+      setTimer(this.getData, 5000)
     },
     beforeDestroy() {
       if (this.timer.length > 0) {
@@ -96,6 +88,15 @@
       }
     },
     methods: {
+      // HTTP API 获取数据
+      getData() {
+        const vm = this
+        tcpOutline().then(response => {
+          vm.processRemoteData(response.data)
+        }).catch(error => {
+          touchError(this, this.getData, error)
+        })
+      },
       // 展示 Items 的样式动态设定
       buttonItem: function(enabled, count) {
         let btnType
@@ -297,10 +298,11 @@
     margin: 20px 10px;
     transition: 0.3s;
     cursor: pointer;
+    background-color: rgba(0, 227, 230, 0.07);
   }
 
   #outline-container .box-card-outline:hover {
-    background-color: rgba(0, 255, 255, 0.11);
+    background-color: rgba(255, 255, 255, 0.07);
   }
 
   #outline-container .box-card-outline .content {

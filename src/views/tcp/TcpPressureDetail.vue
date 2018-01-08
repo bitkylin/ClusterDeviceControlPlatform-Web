@@ -46,7 +46,7 @@
 
 <script>
   import { tcpOutline } from '@/api/tcp'
-  import { Message } from 'element-ui'
+  import { setTimer, touchError } from '@/utils/timer'
 
   export default {
     data: function() {
@@ -58,6 +58,16 @@
     },
     name: 'tcpPressureDetail',
     methods: {
+      getData() {
+        const vm = this
+        tcpOutline().then(response => {
+          vm.itemCount = response.data.activatedCount + response.data.inactivatedCount
+          vm.channelItems = response.data.channelItems
+          vm.tableData = vm.calculateTableData()
+        }).catch(error => {
+          touchError(this, this.getData, error)
+        })
+      },
       filterTag(value, row) {
         return row.tagMsg === value
       },
@@ -105,17 +115,7 @@
       }
     },
     mounted: function() {
-      const vm = this
-      setTimeout(function() {
-        tcpOutline().then(response => {
-          vm.itemCount = response.data.activatedCount + response.data.inactivatedCount
-          vm.channelItems = response.data.channelItems
-          vm.tableData = vm.calculateTableData()
-        }).catch(error => {
-          console.log('error', error)
-          Message.error('错误' + error)
-        })
-      }, 500)
+      setTimer(this.getData, 5000)
     }
   }
 </script>

@@ -5,7 +5,7 @@
     <div id="outline-echarts-pie-description">设备组细节饼状图</div>
     <div id="outline-echarts-pie-container">
       <div :key="item.id" v-for="item in pieItems" :id="'device-group-outline-pie-no'+item.id"
-           class="device-group-outline-pie"></div>
+           class="device-group-outline-pie" @click="routerToSelectedSingleGroup(item.id)"></div>
     </div>
   </div>
 </template>
@@ -13,7 +13,8 @@
 <script>
   import echarts from 'echarts'
   import { deviceGroupDataOutline, deviceGroupCount } from '@/api/data'
-  import { Message } from 'element-ui'
+  import { setTimer, touchError } from '@/utils/timer'
+  import { saveGroupId } from '@/utils/kyUtil'
 
   export default {
     name: 'groupDeviceOutline',
@@ -48,36 +49,35 @@
       this.getdeviceGroupCount()
     },
     methods: {
+      routerToSelectedSingleGroup(id) {
+        saveGroupId(id)
+        this.$router.push({ path: '/devicegroup/single' })
+      },
       // 「HTTP」获取设备组数量
       getdeviceGroupCount() {
         deviceGroupCount().then(response => {
-          Message.success('HTTP API调用成功「1」')
           this.deviceGroupCount = response.data
           this.myChartBar.setOption(this.updateBar('init'))
-          this.queryDeviceGroupOutline()
+          setTimeout(() => setTimer(this.queryDeviceGroupOutline, 5000), 500)
         }).catch(error => {
-          Message.error('错误信息：' + error + '稍后重新获取')
-          setTimeout(this.getdeviceGroupCount, 5000)
+          touchError(this, this.getdeviceGroupCount, error)
         })
       },
       // 设置定时任务，从服务器轮询数据
       queryDeviceGroupOutline() {
         const vm = this
-        setTimeout(function() {
-          deviceGroupDataOutline().then(response => {
-            Message.success('HTTP API调用成功「2」')
-            const data = response.data
-            vm.deviceGroupCount = data.deviceGroupCount
-            vm.normalLimit = data.normalLimit
-            vm.exceptionLimit = data.exceptionLimit
-            // 对柱状图赋值
-            vm.myChartBar.setOption(vm.updateBar('response', data.deviceGroupItems))
-            // 对所有饼图赋值，未初始化时即初始化并挂载
-            vm.refreshDeviceGroupItems(data.deviceGroupItems)
-          }).catch(error => {
-            Message.error('错误' + error)
-          })
-        }, 500)
+        deviceGroupDataOutline().then(response => {
+          const data = response.data
+          vm.deviceGroupCount = data.deviceGroupCount
+          vm.normalLimit = data.normalLimit
+          vm.exceptionLimit = data.exceptionLimit
+          // 对柱状图赋值
+          vm.myChartBar.setOption(vm.updateBar('response', data.deviceGroupItems))
+          // 对所有饼图赋值，未初始化时即初始化并挂载
+          vm.refreshDeviceGroupItems(data.deviceGroupItems)
+        }).catch(error => {
+          touchError(this, this.getdeviceGroupCount, error)
+        })
       },
       // 将HTTP获取的信息更新至柱状图，未初始化时进行初始化
       updateBar(type, response) {
