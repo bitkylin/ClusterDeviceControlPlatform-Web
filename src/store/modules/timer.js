@@ -14,18 +14,6 @@ const timer = {
         clearInterval(state.timerInterval)
       }
     }
-    // // 是否启动错误弹出提示
-    // enableMsgToast(state) {
-    //   const now = new Date().getMilliseconds()
-    //   console.log(' new Date()', new Date())
-    //   console.log('enableMsgToast', now, state.errorToastTime)
-    //   if (now - state.errorToastTime > 5000) {
-    //     state.errorToastTime = now
-    //     state.canToastError = true
-    //   } else {
-    //     state.canToastError = false
-    //   }
-    // }
   },
 
   actions: {
@@ -37,13 +25,6 @@ const timer = {
       timer.call()
       const save = setInterval(timer.call, timer.time)
       commit('setTimerCommit', save)
-      // setTimeout(function() {
-      //   if (state.timerInterval != null) {
-      //     clearInterval(state.timerInterval)
-      //   }
-      //   const save = setInterval(timer.call, timer.time)
-      //   commit('setTimerCommit', save)
-      // }, 0)
     },
     stopTimer({ commit, state }) {
       if (state.timerInterval != null) {

@@ -33,6 +33,14 @@ export const constantRouterMap = [
     component: _import('page404/2'),
     hidden: true
   }, {
+    path: '/solo/msg/feedbacklist',
+    component: _import('msg/FeedbackList'),
+    hidden: true
+  }, {
+    path: '/solo/devicegroup/outline',
+    component: _import('devicegroup/GroupDeviceOutline'),
+    hidden: true
+  }, {
     path: '',
     component: Layout,
     redirect: 'dashboard',
@@ -62,6 +70,23 @@ export const constantRouterMap = [
       meta: { title: '单组', icon: 'table' }
     }]
   }, {
+    path: '/dataprocess',
+    component: Layout,
+    redirect: '/dataprocess/outline',
+    name: 'dataprocess',
+    meta: { title: '数据处理', icon: 'example' },
+    children: [{
+      path: 'outline',
+      name: 'groupDeviceOutline',
+      component: _import('dataprocess/DataProcessPressureOutline'),
+      meta: { title: '压力概览', icon: 'table' }
+    }, {
+      path: 'single',
+      name: 'singleDeviceOutline',
+      component: _import('dataprocess/DataProcessPressureDetail'),
+      meta: { title: '详情', icon: 'table' }
+    }]
+  }, {
     path: '/tcp',
     component: Layout,
     redirect: '/tcp/chart',
@@ -78,35 +103,21 @@ export const constantRouterMap = [
       component: _import('tcp/TcpPressureDetail'),
       meta: { title: '详情', icon: 'table' }
     }]
+  }, {
+    path: '/msg',
+    component: Layout,
+    redirect: '/msg/feedbacklist',
+    name: 'msg',
+    hidden: true,
+    meta: { title: '消息', icon: 'example' },
+    children: [{
+      name: 'feedbackList',
+      path: 'feedbacklist',
+      component: _import('msg/FeedbackList'),
+      meta: { title: '反馈消息', icon: 'table' }
+    }]
   },
-  // {
-  //   path: '/test',
-  //   component: Layout,
-  //   redirect: '/test/first',
-  //   name: 'test',
-  //   meta: { title: '测试', icon: 'example' },
-  //   children: [{
-  //     path: 'first',
-  //     name: 'first',
-  //     component: _import('test/first'),
-  //     meta: { title: '测试1', icon: 'table' }
-  //   }, {
-  //     path: 'second',
-  //     name: 'second',
-  //     component: _import('test/second'),
-  //     meta: { title: '测试2', icon: 'tree' }
-  //   }, {
-  //     path: 'third',
-  //     name: 'third',
-  //     component: _import('test/third'),
-  //     meta: { title: '测试3', icon: 'tree' }
-  //   }, {
-  //     path: 'forth',
-  //     name: 'forth',
-  //     component: _import('test/forth'),
-  //     meta: { title: '测试4', icon: 'tree' }
-  //   }]
-  // },
+
   {
     path: '*',
     redirect: '/404',

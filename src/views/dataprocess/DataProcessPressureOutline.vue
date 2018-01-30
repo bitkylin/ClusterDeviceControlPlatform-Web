@@ -2,24 +2,45 @@
   <div id="main-container">
     <div id="outline-container">
       <el-card class="box-card-outline">
-        <div class="header">设备组容量</div>
-        <div class="content">{{itemCount}}</div>
+        <div class="header">已处理总数</div>
+        <div class="content">{{getMsgCount.msgCount}}</div>
       </el-card>
       <el-card class="box-card-outline">
-        <div class="header">已接入通道数</div>
-        <div class="content">{{itemConnected}}</div>
+        <div class="header">处理比率</div>
+        <div class="content">
+          <span v-bind:style="{fontWeight:'bold'}">{{getMsgCount.processRatio}}</span> |
+          <span v-bind:style="{color:'green',fontWeight:'bold'}">{{getMsgCount.chargeRatio}}</span> |
+          <span v-bind:style="{color:'blue',fontWeight:'bold'}">{{getMsgCount.workRatio}}</span>
+        </div>
       </el-card>
-      <el-card class="box-card-outline">
-        <div class="header">未接入通道数</div>
-        <div class="content">{{itemDisconnected}}</div>
+      <el-card class="box-card-outline charge">
+        <div class="header">充电总数</div>
+        <div class="content">
+          <span v-bind:style="{fontWeight:'bold'}">{{getMsgCount.msgChargeCount}}</span> |
+          <span v-bind:style="{color:'green',fontWeight:'bold'}">+{{getMsgCount.msgChargeIncrement}}</span>
+        </div>
       </el-card>
-      <el-card class="box-card-outline">
-        <div class="header">待接入通道池</div>
-        <div class="content">{{itemWaiting}}</div>
+      <el-card class="box-card-outline charge">
+        <div class="header">充电细节</div>
+        <div class="content"><span
+          v-bind:style="{color:'green',fontWeight:'bold'}">{{getMsgCount.msgChargeCountFixed}}</span> | <span
+          v-bind:style="{color:'red',fontWeight:'bold'}">{{getMsgCount.msgChargeCountVariable}}</span>
+        </div>
       </el-card>
-      <div id="outline-echarts-pie-container">
-        <div id="device-group-outline-pie"></div>
-      </div>
+      <el-card class="box-card-outline work">
+        <div class="header">工作总数</div>
+        <div class="content">
+          <span v-bind:style="{fontWeight:'bold'}">{{getMsgCount.msgWorkCount}}</span> |
+          <span v-bind:style="{color:'green',fontWeight:'bold'}">+{{getMsgCount.msgWorkIncrement}}</span>
+        </div>
+      </el-card>
+      <el-card class="box-card-outline work">
+        <div class="header">工作细节</div>
+        <div class="content"><span
+          v-bind:style="{color:'green',fontWeight:'bold'}">{{getMsgCount.msgWorkCountFixed}}</span> | <span
+          v-bind:style="{color:'red',fontWeight:'bold'}">{{getMsgCount.msgWorkCountVariable}}</span>
+        </div>
+      </el-card>
     </div>
 
     <div id="tcp-traffic-outline-bar"></div>
@@ -44,52 +65,68 @@
 
 <script>
   import echarts from 'echarts'
-  import { tcpOutline } from '@/api/tcp'
+  import { dataProcessOutline } from '@/api/data'
   import { setTimer, touchError } from '@/utils/timer'
 
   export default {
-    name: 'tcpPressureOutline',
-    // watch: { itemConnected: 'draw' },
+    name: 'DataProcessPressureOutline',
     data: function() {
       return {
-        // 定时器管理
-        timer: [],
-        itemCount: '待获取',
-        itemConnected: '待获取',
-        itemDisconnected: '待获取',
-        itemWaiting: '待获取',
+        msgChargeCountLazy: 0,
+        msgWorkCountLazy: 0,
+        msgCount: null,
         channelItems: null,
         // 「服务器获取」设置报警的限定:负载的限定
         normalLimit: null,
         exceptionLimit: null,
-        // 两个Chart的引用
-        myChartPieOutline: '待获取',
+        // Chart的引用
         myChartBarDetail: '待获取'
       }
     },
-    computed: {},
+    computed: {
+      getMsgCount() {
+        if (this.msgCount === null) {
+          return {
+            msgCount: '待获取',
+            msgChargeCount: '待获取',
+            msgChargeCountFixed: '待获取',
+            msgChargeCountVariable: '待获取',
+            msgChargeIncrement: 0,
+            msgWorkCount: '待获取',
+            msgWorkCountFixed: '待获取',
+            msgWorkCountVariable: '待获取',
+            msgWorkIncrement: 0,
+            processRatio: '待获取',
+            chargeRatio: '待获取',
+            workRatio: '待获取'
+          }
+        } else {
+          this.msgCount.processRatio = ((this.msgCount.msgChargeCount + this.msgCount.msgWorkCount) / this.msgCount.msgCount * 100).toFixed(1) + '%'
+          this.msgCount.chargeRatio = (this.msgCount.msgChargeCount / this.msgCount.msgCount * 100).toFixed(1) + '%'
+          this.msgCount.workRatio = (this.msgCount.msgWorkCount / this.msgCount.msgCount * 100).toFixed(1) + '%'
+          this.msgCount.msgChargeIncrement = this.msgCount.msgChargeCount - this.msgChargeCountLazy
+          this.msgChargeCountLazy = this.msgCount.msgChargeCount
+          this.msgCount.msgWorkIncrement = this.msgCount.msgWorkCount - this.msgWorkCountLazy
+          this.msgWorkCountLazy = this.msgCount.msgWorkCount
+          return this.msgCount
+        }
+      }
+    },
     mounted: function() {
-      // 初始化并挂载饼图
-      this.myChartPieOutline = echarts.init(document.getElementById('device-group-outline-pie'))
-      this.myChartPieOutline.setOption(this.updatePie(0, 0))
       // 初始化柱状图的模拟数据
       this.myChartBarDetail = echarts.init(document.getElementById('tcp-traffic-outline-bar'))
       this.myChartBarDetail.setOption(this.initBarDetail('random'))
       window.onresize = () => this.myChartBarDetail.resize()
-      setTimer(this.getData, 5000)
-    },
-    beforeDestroy() {
-      if (this.timer.length > 0) {
-        for (let i = 0; i < this.timer.length; i++) {
-          clearInterval(this.timer[i])
-        }
-      }
+      setTimer(this.getData, 3000)
     },
     methods: {
       // HTTP API 获取数据
       getData() {
         const vm = this
-        tcpOutline().then(response => {
+        dataProcessOutline().then(response => {
+          vm.msgCount = response.data.msgCount
+          vm.channelItems = response.data.channelItems
+          vm.normalLimit = response.data.normalLimit
           vm.processRemoteData(response.data)
         }).catch(error => {
           touchError(this, this.getData, error)
@@ -126,36 +163,11 @@
       },
       // 处理从服务器获取的数据
       processRemoteData(response) {
-        this.itemConnected = Number.parseInt(response.activatedCount)
-        this.itemDisconnected = Number.parseInt(response.inactivatedCount)
-        this.itemWaiting = Number.parseInt(response.waitToActivateCount)
-        this.itemCount = this.itemConnected + this.itemDisconnected
         this.normalLimit = Number.parseInt(response.normalLimit)
         this.exceptionLimit = Number.parseInt(response.exceptionLimit)
         this.channelItems = response.channelItems
 
-        this.myChartPieOutline.setOption(this.updatePie(this.itemConnected, this.itemDisconnected))
         this.myChartBarDetail.setOption(this.initBarDetail('response', response.channelItems))
-      },
-      // 初始化饼图的模拟数据
-      updatePie(itemConnected, itemDisconnected) {
-        return {
-          tooltip: {
-            trigger: 'item'
-          },
-          series: [
-            {
-              name: '连接状况',
-              type: 'pie',
-              roseType: 'angle',
-              radius: '45%',
-              data: [
-                { value: itemDisconnected, name: '未连接' },
-                { value: itemConnected, name: '已连接' }
-              ]
-            }
-          ]
-        }
       },
       // 初始化柱状图的模拟数据
       initBarDetail(type, channelItems) {
@@ -170,7 +182,7 @@
             const item = channelItems[i]
             xData.push(item.id + '组')
             msgCountData.push(item.count)
-            timeCostsData.push(Math.round(item.count * 0.05))
+            timeCostsData.push(Math.round(item.count * 0.005))
           }
         } else {
           for (let i = 0; i < length; i++) {
@@ -182,7 +194,7 @@
         }
         const ret = {
           title: {
-            text: 'TCP接口压力图示',
+            text: '数据处理压力图示',
             x: '100'
           },
           tooltip: {
@@ -289,7 +301,7 @@
   }
 </script>
 
-<style scoped>
+<style rel="stylesheet/scss" lang="scss" scoped>
   #main-container {
     /*display: flex;*/
     font-weight: bold;
@@ -302,44 +314,39 @@
     /*flex-flow: wrap;*/
     justify-content: space-between;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);;
-  }
 
-  #outline-container .box-card-outline {
-    max-width: 250px;
-    height: 100px;
-    flex: 2 1 auto;
-    margin: 20px 10px;
-    transition: 0.3s;
-    cursor: pointer;
-    background-color: rgba(0, 227, 230, 0.07);
-  }
+    .box-card-outline {
+      max-width: 300px;
+      height: 100px;
+      flex: 2 1 auto;
+      margin: 20px 10px;
+      transition: 0.3s;
+      cursor: pointer;
+      background-color: rgba(0, 227, 230, 0.07);
 
-  #outline-container .box-card-outline:hover {
-    background-color: rgba(255, 255, 255, 0.07);
-  }
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.07);
+      }
 
-  #outline-container .box-card-outline .content {
-    font-size: 130%;
-    text-align: center;
-    padding-top: 10px;
-  }
+      .content {
+        font-size: 130%;
+        text-align: center;
+        padding-top: 10px;
+      }
 
-  #outline-container .box-card-outline .header {
-    color: rgba(0, 0, 0, 0.51);
-    padding-bottom: 10px;
-    text-align: center;
-  }
+      .header {
+        color: rgba(0, 0, 0, 0.51);
+        padding-bottom: 10px;
+        text-align: center;
+      }
 
-  /*********** echarts-pie ***********************/
-  #outline-echarts-pie-container {
-    transition: 0.3s;
-    height: 150px;
-  }
-
-  #outline-echarts-pie-container #device-group-outline-pie {
-    max-width: 250px;
-    width: 250px;
-    height: 100%;
+    }
+    .charge {
+      background-color: rgba(22, 230, 0, 0.06);
+    }
+    .work {
+      background-color: rgba(0, 45, 230, 0.07);
+    }
   }
 
   /*********** echarts-bar-detail ***********************/

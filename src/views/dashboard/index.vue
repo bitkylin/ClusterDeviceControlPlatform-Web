@@ -36,8 +36,8 @@
         <div class="content" v-else>待获取</div>
       </el-card>
       <!--是否有未读的服务器消息-->
-      <el-card class="box-card-outline-item">
-        <div class="header">未读消息</div>
+      <el-card @click.native="redirectToFeedbackMsgs" class="box-card-outline-item">
+        <div class="header">未处理消息</div>
         <div class="content" v-if="serverStatusInfo">{{serverStatusInfo.processedMsgCount}}</div>
         <div class="content" v-else>待获取</div>
       </el-card>
@@ -84,6 +84,11 @@
             <td class="table-key">随机数据</td>
             <td class="table-value" v-if="serverSettingInfo.randomDataMode" v-bind:style="{ color: 'red' }">已开启</td>
             <td class="table-value" v-else v-bind:style="{ color: 'green' }">已关闭</td>
+          </tr>
+          <tr>
+            <td class="table-key">未响应监测</td>
+            <td class="table-value" v-if="serverSettingInfo.noResponseMonitor" v-bind:style="{ color: 'green' }">已开启</td>
+            <td class="table-value" v-else v-bind:style="{ color: 'red' }">已关闭</td>
           </tr>
           <tr>
             <td class="table-key">本地配置文件</td>
@@ -177,24 +182,28 @@
         <div class="header">设备通信</div>
         <table class="content-table" v-if="tcpInfo">
           <tr>
-            <td class="table-key">帧发送间隔</td>
+            <td class="table-key">帧发送间隔「ms」</td>
             <td class="table-value">{{tcpInfo.frameSendInterval}}</td>
           </tr>
           <tr>
-            <td class="table-key">帧重发监测延时</td>
+            <td class="table-key">帧重发监测延时「s」</td>
             <td class="table-value">{{tcpInfo.detectInterval}}</td>
           </tr>
           <tr>
-            <td class="table-key">通信容忍延时</td>
+            <td class="table-key">通信容忍延时「ms」</td>
             <td class="table-value">{{tcpInfo.commDelay}}</td>
           </tr>
           <tr>
-            <td class="table-key">检错重发次数</td>
+            <td class="table-key">检错重发次数「次」</td>
             <td class="table-value">{{tcpInfo.autoRepeatTimes}}</td>
           </tr>
           <tr>
-            <td class="table-key">剩余充电次数报警</td>
+            <td class="table-key">剩余充电次数报警「次」</td>
             <td class="table-value">{{tcpInfo.remainChargeTimes}}</td>
+          </tr>
+          <tr>
+            <td class="table-key">未响应最大持续时间「s」</td>
+            <td class="table-value">{{tcpInfo.noResponseInterval}}</td>
           </tr>
         </table>
         <div class="content-placeholder" v-else>待获取</div>
@@ -211,19 +220,19 @@
             <td class="table-value">{{tcpDetailInfo.maxDeviceId}}</td>
           </tr>
           <tr>
-            <td class="table-key">主帧帧头长度</td>
+            <td class="table-key">主帧帧头长度「Byte」</td>
             <td class="table-value">{{tcpDetailInfo.frameHeadLength}}</td>
           </tr>
           <tr>
-            <td class="table-key">数据体最大长度</td>
+            <td class="table-key">数据体最大长度「Byte」</td>
             <td class="table-value">{{tcpDetailInfo.maxDataLength}}</td>
           </tr>
           <tr>
-            <td class="table-key">子帧帧头长度</td>
+            <td class="table-key">子帧帧头长度「Byte」</td>
             <td class="table-value">{{tcpDetailInfo.subFrameHeadLength}}</td>
           </tr>
           <tr>
-            <td class="table-key">数据发送响应时间(ms)</td>
+            <td class="table-key">数据发送响应时间「ms」</td>
             <td class="table-value">{{tcpDetailInfo.awakeToProcessInterval}}</td>
           </tr>
         </table>
@@ -290,7 +299,7 @@
       },
       // HTTP API 调取数据
       getData() {
-        this.dataBeforeTime = new Date().getMilliseconds()
+        this.dataBeforeTime = new Date().getTime()
         // 调取HTTP API获取数据
         serverInfoOutline().then(response => {
           const data = response.data
@@ -301,12 +310,13 @@
           this.dataBaseInfo = data.dataBaseInfo
           this.tcpInfo = data.tcpInfo
           this.tcpDetailInfo = data.tcpDetailInfo
-          const commDelay = new Date().getMilliseconds() - this.dataBeforeTime
-          console.log(new Date().getMilliseconds(), this.dataBeforeTime)
-          this.commDelay = commDelay < 0 ? 0 : commDelay
+          this.commDelay = new Date().getTime() - this.dataBeforeTime
         }).catch(error => {
           touchError(this, this.getData, error)
         })
+      },
+      redirectToFeedbackMsgs() {
+        this.$router.push({ path: '/msg/feedbacklist' })
       }
     },
     mounted: function() {

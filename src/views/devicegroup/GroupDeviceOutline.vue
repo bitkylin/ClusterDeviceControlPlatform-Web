@@ -186,7 +186,7 @@
           },
           series: [
             {
-              name: '连接状况',
+              name: '单组状态',
               type: 'pie',
               // roseType: 'angle',
               radius: '55%',

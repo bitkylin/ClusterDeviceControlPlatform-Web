@@ -10,21 +10,28 @@ export function deviceGroupDataOutline() {
 
 export function deviceGroupCount() {
   return request({
-    url: '/dataprocess/devicegroup/count',
+    url: '/dataprocess/devicegroup/maxgroupcount',
     method: 'get'
   })
 }
 
 export function singleGroupDeviceCount() {
   return request({
-    url: '/dataprocess/device/count',
+    url: '/dataprocess/devicegroup/maxdevicecount',
     method: 'get'
   })
 }
 
 export function singleGroupDeviceData(groupId) {
   return request({
-    url: '/dataprocess/device/detail/' + groupId,
+    url: '/dataprocess/devicegroup/detail/' + groupId,
+    method: 'get'
+  })
+}
+
+export function dataProcessOutline() {
+  return request({
+    url: '/dataprocess/devicegroup/pressure',
     method: 'get'
   })
 }

@@ -60,7 +60,6 @@
           }
         }
       }
-      window.onresize()
     }
   }
 </script>

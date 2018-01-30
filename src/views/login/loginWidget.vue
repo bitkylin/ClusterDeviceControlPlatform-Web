@@ -1,7 +1,7 @@
 <template>
   <div id="login-container" v-loading="loading">
     <div class="hold-space-div"></div>
-    <h3 id="title">智能充电柜监控云平台</h3>
+    <h3 id="title">集群设备管理云平台</h3>
     <el-form id="login-form" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
       <el-form-item prop="username">
         <el-input name="username" type="text" v-model="loginForm.username" placeholder="用户名"
@@ -87,11 +87,7 @@
         if (this.commDelay === '待获取') {
           return this.commDelay
         } else {
-          if (this.commDelay < 0) {
-            return '0ms'
-          } else {
-            return this.commDelay + 'ms'
-          }
+          return this.commDelay + 'ms'
         }
       }
     },
@@ -120,12 +116,12 @@
       },
       // 服务器可接入测试
       serverAttachTest() {
-        this.dataBeforeTime = new Date().getMilliseconds()
+        this.dataBeforeTime = new Date().getTime()
         // 调取HTTP API获取数据
         serverAttach().then(response => {
           const data = response.data
           this.IsNormal = data === 'success'
-          this.commDelay = new Date().getMilliseconds() - this.dataBeforeTime
+          this.commDelay = new Date().getTime() - this.dataBeforeTime
         }).catch(error => {
           touchError(this, this.serverAttachTest, error)
         })
