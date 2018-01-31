@@ -41,6 +41,10 @@ export const constantRouterMap = [
     component: _import('devicegroup/GroupDeviceOutline'),
     hidden: true
   }, {
+    path: '/solo/devicegroup/single',
+    component: _import('devicegroup/SingleGroupOutline'),
+    hidden: true
+  }, {
     path: '',
     component: Layout,
     redirect: 'dashboard',

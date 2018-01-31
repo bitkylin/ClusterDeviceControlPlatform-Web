@@ -1,8 +1,11 @@
 # 基于 Vue.js 2.0 & Element 2.0 的集群设备管理云平台
 
 [![GitHub stars](https://img.shields.io/github/stars/bitkylin/ClusterDeviceControlPlatform-Web.svg)](https://github.com/bitkylin/ClusterDeviceControlPlatform-Web/stargazers)
+[![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
+[![Build Status](https://travis-ci.org/bitkylin/ClusterDeviceControlPlatform-Web.svg?branch=master)](https://travis-ci.org/bitkylin/ClusterDeviceControlPlatform-Web)
+[![Dependency Status](https://david-dm.org/bitkylin/ClusterDeviceControlPlatform-Web.svg)](https://david-dm.org/bitkylin/ClusterDeviceControlPlatform-Web)
+[![许可证](https://img.shields.io/badge/许可证-MIT-blue.svg)](https://github.com/bitkylin/ClusterDeviceControlPlatform-Web/blob/master/LICENSE)
 ![技术](https://img.shields.io/badge/%E6%8A%80%E6%9C%AF-Vue.js_2.0%7CElement_2.0%7CRESTful_API-brightgreen.svg)
-[![许可证](https://img.shields.io/badge/许可证-MIT-blue.svg)](https://github.com/bitkylin/ClusterDeviceControlPlatform/blob/master/LICENSE)
 
 ## 项目描述
 
@@ -18,6 +21,28 @@ Java & Vue.js 全栈项目，大规模集群设备管理云平台，由以下几
 
 **注意：[本项目为系统的 Web 部分，系统后端部分为单独的项目，点击此处跳转](https://github.com/bitkylin/ClusterDeviceControlPlatform)**
 
+## 运行方法
+
+进入[配套的 Java 后端项目](https://github.com/bitkylin/ClusterDeviceControlPlatform)，根据该项目的说明，即可成功执行工程「clusterdeviceplatform-demo」，而后构建本项目并运行即可，方法如下：
+
+下载并进入该仓库的根目录，在命令行下，安装依赖：
+
+```shell
+npm install
+```
+
+依赖安装完毕后，执行如下命令进行调试：
+
+```shell
+npm run start
+```
+
+或执行如下命令进行构建：
+
+```shell
+npm run build
+```
+
 ## 项目图示
 
 ### 1. 基于 Vue.js 的 Web 前端「SPA」单页应用程序
@@ -26,25 +51,35 @@ Java & Vue.js 全栈项目，大规模集群设备管理云平台，由以下几
 
 ![Web 登录页面](./mdphoto/main11.jpg)
 
-**Web 单设备组详细信息显示**
+**设备组细节概览图示**
+
+![设备组细节概览图示](./mdphoto/main14.jpg)
+
+**单设备组详细信息显示**
 
 ![单设备组详细信息显示](./mdphoto/main12.jpg)
 
-**Web 服务器压力图示**
+**服务器压力图示**
 
 ![服务器压力图示](./mdphoto/main13.jpg)
+
+
 
 ### 系统架构图示
 
 ![系统架构图示](./mdphoto/main19.png)
 
-## 基于 Vue.js 的 Web 前端「SPA」单页应用程序
+## 附录
+
+**本项目以[ vueAdmin-template ](https://github.com/PanJiaChen/vueAdmin-template)项目为基础框架开发而成，特别感谢该项目的作者！**
 
 绚丽的现代化 SPA 应用程序，可视化展现服务器内部的各项数据，包括服务器消息队列、通信压力、实时通信信息等。
 
 该应用开发时，设计经验总结可见以下文章：
 
 [基于 Vue.js 2.0 酷炫自适应背景视频登录页面的设计](https://www.jianshu.com/p/8097bb3d9d49)
+
+文章会不时进行更新。
 
 ## [License](https://github.com/bitkylin/ClusterDeviceControlPlatform-Web/blob/master/LICENSE)
 

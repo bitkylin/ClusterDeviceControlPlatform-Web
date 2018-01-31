@@ -20,6 +20,7 @@
     name: 'groupDeviceOutline',
     data: function() {
       return {
+        routerSingle: '/devicegroup/single',
         // 「服务器获取」设备组数量
         deviceGroupCount: 0,
         // 「服务器获取」设置报警的限定:负载的限定
@@ -47,11 +48,14 @@
       window.onresize = () => this.myChartBar.resize()
       // 调取HTTP API获取数据
       this.getdeviceGroupCount()
+      if (this.$route.path === '/solo/devicegroup/outline') {
+        this.routerSingle = '/solo/devicegroup/single'
+      }
     },
     methods: {
       routerToSelectedSingleGroup(id) {
         saveGroupId(id)
-        this.$router.push({ path: '/devicegroup/single' })
+        this.$router.push({ path: this.routerSingle })
       },
       // 「HTTP」获取设备组数量
       getdeviceGroupCount() {
