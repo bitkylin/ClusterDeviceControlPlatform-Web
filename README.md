@@ -1,7 +1,6 @@
 # 基于 Vue.js 2.0 & Element 2.0 的集群设备管理云平台
 
 [![GitHub stars](https://img.shields.io/github/stars/bitkylin/ClusterDeviceControlPlatform-Web.svg)](https://github.com/bitkylin/ClusterDeviceControlPlatform-Web/stargazers)
-[![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
 [![Build Status](https://travis-ci.org/bitkylin/ClusterDeviceControlPlatform-Web.svg?branch=master)](https://travis-ci.org/bitkylin/ClusterDeviceControlPlatform-Web)
 [![Dependency Status](https://david-dm.org/bitkylin/ClusterDeviceControlPlatform-Web.svg)](https://david-dm.org/bitkylin/ClusterDeviceControlPlatform-Web)
 [![许可证](https://img.shields.io/badge/许可证-MIT-blue.svg)](https://github.com/bitkylin/ClusterDeviceControlPlatform-Web/blob/master/LICENSE)
