@@ -3,14 +3,8 @@
     <div id="item-container">
       <!--服务器连接状态-->
       <el-card class="box-card-outline-item">
-        <div class="header">连接状态</div>
-        <div class="content" v-if="commStatus" v-bind:style="{ color: 'green' }">正常</div>
-        <div class="content" v-else v-bind:style="{ color: 'red' }">异常</div>
-      </el-card>
-      <!--服务器工作状态-->
-      <el-card class="box-card-outline-item">
-        <div class="header">工作状态</div>
-        <div class="content" v-if="workStatus" v-bind:style="{ color: 'green' }">正常</div>
+        <div class="header">服务器状态</div>
+        <div class="content" v-if="serverStatus" v-bind:style="{ color: 'green' }">正常</div>
         <div class="content" v-else v-bind:style="{ color: 'red' }">异常</div>
       </el-card>
       <!--服务器版本-->
@@ -35,12 +29,19 @@
         </div>
         <div class="content" v-else>待获取</div>
       </el-card>
-      <!--是否有未读的服务器消息-->
+      <!--是否有服务器消息-->
       <el-card @click.native="redirectToFeedbackMsgs" class="box-card-outline-item">
         <div class="header">未处理消息</div>
-        <div class="content" v-if="serverStatusInfo">{{serverStatusInfo.processedMsgCount}}</div>
+        <div class="content" v-if="serverStatusInfo">{{serverStatusInfo.exceptionMsgCount}}</div>
         <div class="content" v-else>待获取</div>
       </el-card>
+      <!--是否有设备超时消息-->
+      <el-card @click.native="redirectToTimeOutMsgs" class="box-card-outline-item">
+        <div class="header">超时消息</div>
+        <div class="content" v-if="serverStatusInfo">{{serverStatusInfo.timeoutMsgCount}}</div>
+        <div class="content" v-else>待获取</div>
+      </el-card>
+
     </div>
     <!--服务器信息详情-->
     <div id="server-status-content">
@@ -87,7 +88,8 @@
           </tr>
           <tr>
             <td class="table-key">未响应监测</td>
-            <td class="table-value" v-if="serverSettingInfo.noResponseMonitor" v-bind:style="{ color: 'green' }">已开启</td>
+            <td class="table-value" v-if="serverSettingInfo.noResponseMonitor" v-bind:style="{ color: 'green' }">已开启
+            </td>
             <td class="table-value" v-else v-bind:style="{ color: 'red' }">已关闭</td>
           </tr>
           <tr>
@@ -253,8 +255,7 @@
     data() {
       return {
         // ***** 概况信息 ******
-        commStatus: true,
-        workStatus: true,
+        serverStatus: true,
 
         // ***** 细节信息 ******
         // 主服务器信息
@@ -316,7 +317,10 @@
         })
       },
       redirectToFeedbackMsgs() {
-        this.$router.push({ path: '/msg/feedbacklist' })
+        this.$router.push({ path: '/msg/feedbacklist?type=exception' })
+      },
+      redirectToTimeOutMsgs() {
+        this.$router.push({ path: '/msg/feedbacklist?type=timeout' })
       }
     },
     mounted: function() {

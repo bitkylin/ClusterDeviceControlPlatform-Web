@@ -88,7 +88,9 @@
     watch: {
       // 将被选中的 GroupId 存入 Store
       selectedGroupId: function(val, oldVal) {
+        console.log('设备组转换', oldVal + '->' + val)
         saveGroupId(val)
+        setTimer(this.getDeviceDetail, 2000)
       }
     },
     methods: {

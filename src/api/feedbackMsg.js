@@ -1,8 +1,15 @@
 import request from '@/utils/request'
 
-export function getFeedbackItems() {
+export function getFeedbackItemsException() {
   return request({
-    url: '/feedback/items',
+    url: '/feedback/items/exception',
+    method: 'get'
+  })
+}
+
+export function getFeedbackItemsTimeout() {
+  return request({
+    url: '/feedback/items/timeout',
     method: 'get'
   })
 }
