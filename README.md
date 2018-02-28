@@ -42,6 +42,12 @@ npm run start
 npm run build
 ```
 
+**当然，以上运行说明并不完善，详细的构建方法及方便的一键构建脚本，可参考如下两篇文章：**
+
+1. [使用 Linux 子系统部署 Node、Gradle 项目的构建工具](https://www.jianshu.com/p/f34d1f2e329c)
+
+2. [Windows 10 用于 Linux 子系统的一键构建、打包脚本「 Node、Gradle 项目」](https://www.jianshu.com/p/6c78f35e228e)
+
 ## 项目图示
 
 ### 1. 基于 Vue.js 的 Web 前端「SPA」单页应用程序
