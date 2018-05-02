@@ -45,7 +45,7 @@
 <script>
   import { isvalidUsernameOrPassword } from '@/utils/validate'
   import { setTimer, touchError } from '@/utils/timer'
-  import { chooseElegantSentencesLogin } from '@/utils/kyUtil'
+  import { chooseElegantSentencesLogin } from '@/utils/chooseElegantSentences'
   import { serverAttach } from '@/api/server'
 
   export default {

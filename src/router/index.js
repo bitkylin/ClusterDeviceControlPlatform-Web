@@ -61,7 +61,7 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/devicegroup/outline',
     name: 'deviceGroup',
-    meta: { title: '设备组', icon: 'example' },
+    meta: { title: '设备当前状态', icon: 'example' },
     children: [{
       path: 'outline',
       name: 'groupDeviceOutline',
@@ -78,34 +78,46 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/dataprocess/outline',
     name: 'dataprocess',
-    meta: { title: '数据处理', icon: 'example' },
+    meta: { title: '数据处理负载', icon: 'example' },
     children: [{
       path: 'outline',
-      name: 'groupDeviceOutline',
+      name: 'dataProcessPressureOutline',
       component: _import('dataprocess/DataProcessPressureOutline'),
-      meta: { title: '压力概览', icon: 'table' }
+      meta: { title: '概览', icon: 'table' }
     }, {
       path: 'single',
-      name: 'singleDeviceOutline',
+      name: 'dataProcessPressureDetail',
       component: _import('dataprocess/DataProcessPressureDetail'),
       meta: { title: '详情', icon: 'table' }
     }]
   }, {
     path: '/tcp',
     component: Layout,
-    redirect: '/tcp/chart',
+    redirect: '/tcp/outline',
     name: 'tcp',
-    meta: { title: 'TCP接口', icon: 'example' },
+    meta: { title: 'TCP接口负载', icon: 'example' },
     children: [{
       path: 'outline',
       name: 'tcpPressureOutline',
       component: _import('tcp/TcpPressureOutline'),
-      meta: { title: '压力概览', icon: 'table' }
+      meta: { title: '概览', icon: 'table' }
     }, {
       path: 'detail',
       name: 'tcpPressureDetail',
       component: _import('tcp/TcpPressureDetail'),
       meta: { title: '详情', icon: 'table' }
+    }]
+  }, {
+    path: '/msgsending',
+    component: Layout,
+    redirect: '/msgsending/outline',
+    name: 'msgsending',
+    meta: { title: '消息发送进度', icon: 'example' },
+    children: [{
+      path: 'outline',
+      name: 'msgSendingOutline',
+      component: _import('msgsending/msgSendingOutline'),
+      meta: { title: '概览', icon: 'table' }
     }]
   }, {
     path: '/msg',
@@ -121,7 +133,17 @@ export const constantRouterMap = [
       meta: { title: '反馈消息', icon: 'table' }
     }]
   },
-
+  // , {
+  //   path: 'devicegroup',
+  //   name: 'msgSendingSingleGroup',
+  //   component: _import('msgsending/MsgSendingSingleGroup'),
+  //   meta: { title: '单组', icon: 'table' }
+  // }, {
+  //   path: 'singledevice',
+  //   name: 'msgSendingSingleDevice',
+  //   component: _import('msgsending/MsgSendingSingleDevice'),
+  //   meta: { title: '单设备', icon: 'table' }
+  // }
   {
     path: '*',
     redirect: '/404',

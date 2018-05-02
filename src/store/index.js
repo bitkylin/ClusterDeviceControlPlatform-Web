@@ -4,7 +4,7 @@ import app from './modules/app'
 import user from './modules/user'
 import timer from './modules/timer'
 import getters from './getters'
-import selectedGroup from './modules/selectedGroup'
+import selectedDevice from './modules/selectedDevice'
 
 Vue.use(Vuex)
 
@@ -13,7 +13,7 @@ const store = new Vuex.Store({
     app,
     user,
     timer,
-    selectedGroup
+    selectedDevice
   },
   getters
 })

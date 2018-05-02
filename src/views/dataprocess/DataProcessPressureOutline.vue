@@ -69,7 +69,7 @@
   import { setTimer, touchError } from '@/utils/timer'
 
   export default {
-    name: 'DataProcessPressureOutline',
+    name: 'dataProcessPressureOutline',
     data: function() {
       return {
         msgChargeCountLazy: 0,

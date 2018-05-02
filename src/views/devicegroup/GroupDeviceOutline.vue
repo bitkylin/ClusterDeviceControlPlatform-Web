@@ -14,7 +14,7 @@
   import echarts from 'echarts'
   import { deviceGroupDataOutline, deviceGroupCount } from '@/api/data'
   import { setTimer, touchError } from '@/utils/timer'
-  import { saveGroupId } from '@/utils/kyUtil'
+  import { saveGroupId } from '@/utils/storeUtil'
 
   export default {
     name: 'groupDeviceOutline',

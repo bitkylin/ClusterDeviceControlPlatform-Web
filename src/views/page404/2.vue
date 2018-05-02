@@ -39,7 +39,7 @@
 <script>
   import errGif from '@/assets/401_images/401.gif'
   import { serverAttach } from '@/api/server'
-  import { chooseElegantSentences404 } from '@/utils/kyUtil'
+  import { chooseElegantSentences404 } from '@/utils/chooseElegantSentences'
 
   export default {
     name: 'page401',

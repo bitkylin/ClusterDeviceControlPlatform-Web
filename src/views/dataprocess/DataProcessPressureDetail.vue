@@ -58,7 +58,7 @@
         tableData: null
       }
     },
-    name: 'DataProcessPressureDetail',
+    name: 'dataProcessPressureDetail',
     methods: {
       getData() {
         const vm = this

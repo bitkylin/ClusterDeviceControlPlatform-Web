@@ -61,7 +61,7 @@
   import echarts from 'echarts'
   import { singleGroupDeviceData, singleGroupDeviceCount } from '@/api/data'
   import { setTimer, touchError } from '@/utils/timer'
-  import { saveGroupId, getGroupId } from '@/utils/kyUtil'
+  import { saveGroupId, getGroupId } from '@/utils/storeUtil'
 
   export default {
     name: 'singleDeviceOutline',
@@ -173,7 +173,7 @@
 
   #main-container {
     font-weight: bold;
-    padding: 0px 10px;
+    padding: 0 10px;
   }
 
   /****************** outline item **********************/
@@ -234,7 +234,7 @@
       max-width: 150px;
       width: 150px;
       flex: 1 1 auto;
-      margin: 10px 0px 5px 10px;
+      margin: 10px 0 5px 10px;
       transition: 0.3s;
       cursor: pointer;
       /*background-color: rgba(0, 227, 255, 0.07);*/

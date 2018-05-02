@@ -1,5 +1,4 @@
 import store from '../store'
-// import { Message } from 'element-ui'
 
 // 设置定时器，经过指定的时间time循环执行call函数
 export function setTimer(call, time) {
