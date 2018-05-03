@@ -3,7 +3,7 @@
     <div id="outline-container">
       <el-card class="box-card-outline">
         <div class="header">发送中组数</div>
-        <div class="content"></div>
+        <div class="content">{{groupCount}}</div>
       </el-card>
       <el-card class="box-card-outline">
         <div class="header">消息总数</div>
@@ -33,40 +33,46 @@
       </div>
     </div>
     <div id="item-container-flated" v-if="itemIsFlat">
-      <!--<groupProgressWidget :percentage='item' :key="item" v-for="item in [1,2,3,4]"></groupProgressWidget>-->
+      <msgSendingWidget :item='item' :key="deviceFlag(item.groupId, item.deviceId, item.detail)"
+                        v-for="item in msgSendingItems"></msgSendingWidget>
     </div>
     <div id="item-container-grouped" v-else>
-      <groupProgressWidget :item='item' :key="item.groupId" v-for="item in deviceGroupedItems"></groupProgressWidget>
+      <groupProgressWidget :item='item' :key="item.groupId"
+                           v-for="item in deviceGroupedItems"
+                           @click.native="routerToSelectedSingleGroup(item.groupId)"></groupProgressWidget>
     </div>
   </div>
 </template>
 
 <script>
   import groupProgressWidget from './widget/groupProgressWidget'
+  import msgSendingWidget from './widget/msgSendingWidget'
 
   import { getMsgSendingOutline, clearMsgSendingOutline } from '@/api/msgsending'
-  import { floatToFixed, countMsgSum } from '@/utils/kyUtil'
+  import { floatToFixed, countMsgSum, createDeviceFlag } from '@/utils/kyUtil'
   import {
     saveItemIsFlat,
     getItemIsFlat,
     saveOutlineMsgCount,
     getOutlineMsgCount,
     saveGroupMsgCount,
-    getGroupMsgCount
+    getGroupMsgCount,
+    saveGroupId
   } from '@/utils/storeUtil'
   import { setTimer, touchError } from '@/utils/timer'
 
   export default {
     name: 'msgSendingOutline',
-    components: { groupProgressWidget },
+    components: { groupProgressWidget, msgSendingWidget },
     data() {
       return {
+        routerSingle: '/msgsending/singlegroup',
         itemIsFlat: getItemIsFlat(),
-        webData: null,
         msgCount: 0,
         msgSendingCount: 0,
-        msgSendings: [],
-        deviceGroupedItems: []
+        groupCount: 0,
+        deviceGroupedItems: [],
+        msgSendingItems: []
       }
     },
     computed: {
@@ -86,12 +92,13 @@
       // 「HTTP」获取TCP通道待发送的消息统计概览
       getMsgSendingOutline() {
         getMsgSendingOutline(this.itemIsFlat).then(response => {
-          this.webData = response.data
-          this.msgCount = countMsgSum(getOutlineMsgCount(), this.webData.msgCount)
+          const webData = response.data
+          this.msgCount = countMsgSum(getOutlineMsgCount(), webData.msgCount)
           saveOutlineMsgCount(this.msgCount)
-          this.msgSendingCount = this.webData.msgSendingCount
-          const msgSendings = this.webData.msgSendings
-          const deviceGroupedItems = this.webData.deviceGroupedItems
+          this.msgSendingCount = webData.msgSendingCount
+          this.groupCount = webData.groupCount
+          const msgSendings = webData.msgSendings
+          const deviceGroupedItems = webData.deviceGroupedItems
           this.dataProcess(msgSendings, deviceGroupedItems)
         }).catch(error => {
           touchError(this, null, error)
@@ -108,9 +115,16 @@
             item['msgCount'] = getGroupMsgCount(item.groupId)
             item['dataProcess'] = floatToFixed(item.msgSendingCount, item.msgCount)
           }
-          this.msgSendings = msgSendings
-          this.deviceGroupedItems = deviceGroupedItems
         }
+        this.msgSendingItems = msgSendings
+        this.deviceGroupedItems = deviceGroupedItems
+      },
+      deviceFlag(groupId, deviceId, detail) {
+        return createDeviceFlag(groupId, deviceId, detail)
+      },
+      routerToSelectedSingleGroup(id) {
+        saveGroupId(id)
+        this.$router.push({ path: this.routerSingle })
       }
     },
     mounted: function() {
@@ -170,6 +184,12 @@
   }
 
   #item-container-grouped {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+  }
+
+  #item-container-flated {
     display: flex;
     flex-wrap: wrap;
     justify-content: left;

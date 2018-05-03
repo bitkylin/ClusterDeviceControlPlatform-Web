@@ -38,7 +38,7 @@
       max-width: 150px;
       width: 150px;
       flex: 1 1 auto;
-      margin: 10px 0px 5px 10px;
+      margin: 10px 0 5px 10px;
       transition: 0.3s;
       cursor: pointer;
       background-color: rgba(0, 227, 255, 0.07);

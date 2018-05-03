@@ -1,9 +1,9 @@
 <template>
   <div>
     <el-button v-if="showclearbtn" @click="clearItems" id="clearFeedbackButton" round>处理完毕</el-button>
-    <el-switch v-if="showclearbtn" v-model="showMsgTypeSwitch" id="feedbackSwitch"
-      active-color="#13ce66" active-text="超时信息" active-value="timeout"
-      inactive-color="#ff4949" inactive-text="异常状态" inactive-value="exception">
+    <el-switch v-if="showclearbtn" v-model="showMsgTypeSwitch" class="feedbackSwitch"
+               active-color="#13ce66" active-text="超时信息" active-value="timeout"
+               inactive-color="#ff4949" inactive-text="异常状态" inactive-value="exception">
     </el-switch>
     <el-table :data="tableData">
       <el-table-column min-width="35">
@@ -166,7 +166,7 @@
     top: 5px;
   }
 
-  #feedbackSwitch {
+  .feedbackSwitch {
     z-index: 100;
     position: fixed;
     right: 250px;

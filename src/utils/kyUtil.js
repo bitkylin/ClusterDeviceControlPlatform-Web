@@ -15,3 +15,8 @@ export function countMsgSum(msgCountOld, msgCount) {
     return msgCountOld
   }
 }
+
+// 根据设备号和设备组号生成独立的ID
+export function createDeviceFlag(groupId, deviceId, detail) {
+  return groupId * 1000 + deviceId + detail
+}
