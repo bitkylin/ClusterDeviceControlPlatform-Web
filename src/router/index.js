@@ -118,6 +118,16 @@ export const constantRouterMap = [
       name: 'msgSendingOutline',
       component: _import('msgsending/msgSendingOutline'),
       meta: { title: '概览', icon: 'table' }
+    }, {
+      path: 'singlegroup',
+      name: 'msgSendingSingleGroup',
+      component: _import('msgsending/msgSendingSingleGroup'),
+      meta: { title: '单组', icon: 'table' }
+    }, {
+      path: 'singledevice',
+      name: 'msgSendingSingleDevice',
+      component: _import('msgsending/msgSendingSingleDevice'),
+      meta: { title: '单设备', icon: 'table' }
     }]
   }, {
     path: '/msg',
@@ -132,19 +142,7 @@ export const constantRouterMap = [
       component: _import('msg/FeedbackList'),
       meta: { title: '反馈消息', icon: 'table' }
     }]
-  },
-  // , {
-  //   path: 'devicegroup',
-  //   name: 'msgSendingSingleGroup',
-  //   component: _import('msgsending/MsgSendingSingleGroup'),
-  //   meta: { title: '单组', icon: 'table' }
-  // }, {
-  //   path: 'singledevice',
-  //   name: 'msgSendingSingleDevice',
-  //   component: _import('msgsending/MsgSendingSingleDevice'),
-  //   meta: { title: '单设备', icon: 'table' }
-  // }
-  {
+  }, {
     path: '*',
     redirect: '/404',
     hidden: true
