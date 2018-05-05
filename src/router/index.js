@@ -28,7 +28,7 @@ export const constantRouterMap = [
     hidden: true
   }, {
     path: '/404',
-    component: () => import('@/views/404'),
+    component: () => import('@/views/page404/1'),
     hidden: true
   }, {
     path: '/disconnect',
