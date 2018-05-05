@@ -1,6 +1,7 @@
 .DS_Store
 node_modules/
 node_modulesWin/
+node_modulesLinux/
 dist/
 npm-debug.log*
 yarn-debug.log*

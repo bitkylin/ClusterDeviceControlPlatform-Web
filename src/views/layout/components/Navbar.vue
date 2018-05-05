@@ -66,19 +66,23 @@
       color: red;
     }
     .avatar-container {
-      padding-top: 10px;
+      height: 50px;
       display: inline-block;
       position: absolute;
-      right: 20px;
+      right: 35px;
       .avatar-wrapper {
-        height: 40px;
         cursor: pointer;
+        margin-top: 5px;
+        position: relative;
         .user-avatar {
-          width: 28px;
-          height: 28px;
+          width: 40px;
+          height: 40px;
           border-radius: 10px;
         }
         .el-icon-caret-bottom {
+          position: absolute;
+          right: -20px;
+          top: 25px;
           font-size: 12px;
         }
       }

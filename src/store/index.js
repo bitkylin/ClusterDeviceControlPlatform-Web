@@ -2,8 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import app from './modules/app'
 import user from './modules/user'
-import timer from './modules/timer'
 import getters from './getters'
+import timer from './modules/timer'
 import selectedDevice from './modules/selectedDevice'
 
 Vue.use(Vuex)

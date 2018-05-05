@@ -65,7 +65,7 @@
 </script>
 
 
-<style scoped>
+<style rel="stylesheet/scss" lang="scss" scoped>
   .homepage-hero-module,
   .video-container {
     position: relative;

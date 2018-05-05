@@ -17,9 +17,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .app-main{
-    background-color: rgba(240, 242, 245, 0.31)
-  }
-</style>

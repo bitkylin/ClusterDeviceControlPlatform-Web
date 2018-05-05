@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-const _import = require('./_import_' + process.env.NODE_ENV)
 // in development-env not use lazy-loading, because lazy-loading too many pages will cause webpack hot update too slow. so only in production use lazy-loading;
 // detail: https://panjiachen.github.io/vue-element-admin-site/#/lazy-loading
 
@@ -12,6 +11,9 @@ import Layout from '../views/layout/Layout'
 
 /**
  * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
+ * alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
+ *                                if not set alwaysShow, only more than one route under the children
+ *                                it will becomes nested mode, otherwise not show the root menu
  * redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
@@ -22,27 +24,27 @@ import Layout from '../views/layout/Layout'
 export const constantRouterMap = [
   {
     path: '/login',
-    component: _import('login/index'),
+    component: () => import('@/views/login/index'),
     hidden: true
   }, {
     path: '/404',
-    component: _import('page404/1'),
+    component: () => import('@/views/404'),
     hidden: true
   }, {
     path: '/disconnect',
-    component: _import('page404/2'),
+    component: () => import('@/views/page404/2'),
     hidden: true
   }, {
     path: '/solo/msg/feedbacklist',
-    component: _import('msg/FeedbackList'),
+    component: () => import('@/views/msg/FeedbackList'),
     hidden: true
   }, {
     path: '/solo/devicegroup/outline',
-    component: _import('devicegroup/GroupDeviceOutline'),
+    component: () => import('@/views/devicegroup/GroupDeviceOutline'),
     hidden: true
   }, {
     path: '/solo/devicegroup/single',
-    component: _import('devicegroup/SingleGroupOutline'),
+    component: () => import('@/views/devicegroup/SingleGroupOutline'),
     hidden: true
   }, {
     path: '',
@@ -53,7 +55,7 @@ export const constantRouterMap = [
     children: [{
       name: 'dashboard',
       path: 'dashboard',
-      component: _import('dashboard/index'),
+      component: () => import('@/views/dashboard/index'),
       meta: { title: '首页', icon: 'table' }
     }]
   }, {
@@ -65,12 +67,12 @@ export const constantRouterMap = [
     children: [{
       path: 'outline',
       name: 'groupDeviceOutline',
-      component: _import('devicegroup/GroupDeviceOutline'),
+      component: () => import('@/views/devicegroup/GroupDeviceOutline'),
       meta: { title: '概览', icon: 'table' }
     }, {
       path: 'single',
       name: 'singleDeviceOutline',
-      component: _import('devicegroup/SingleGroupOutline'),
+      component: () => import('@/views/devicegroup/SingleGroupOutline'),
       meta: { title: '单组', icon: 'table' }
     }]
   }, {
@@ -82,12 +84,12 @@ export const constantRouterMap = [
     children: [{
       path: 'outline',
       name: 'dataProcessPressureOutline',
-      component: _import('dataprocess/DataProcessPressureOutline'),
+      component: () => import('@/views/dataprocess/DataProcessPressureOutline'),
       meta: { title: '概览', icon: 'table' }
     }, {
       path: 'single',
       name: 'dataProcessPressureDetail',
-      component: _import('dataprocess/DataProcessPressureDetail'),
+      component: () => import('@/views/dataprocess/DataProcessPressureDetail'),
       meta: { title: '详情', icon: 'table' }
     }]
   }, {
@@ -99,12 +101,12 @@ export const constantRouterMap = [
     children: [{
       path: 'outline',
       name: 'tcpPressureOutline',
-      component: _import('tcp/TcpPressureOutline'),
+      component: () => import('@/views/tcp/TcpPressureOutline'),
       meta: { title: '概览', icon: 'table' }
     }, {
       path: 'detail',
       name: 'tcpPressureDetail',
-      component: _import('tcp/TcpPressureDetail'),
+      component: () => import('@/views/tcp/TcpPressureDetail'),
       meta: { title: '详情', icon: 'table' }
     }]
   }, {
@@ -116,17 +118,17 @@ export const constantRouterMap = [
     children: [{
       path: 'outline',
       name: 'msgSendingOutline',
-      component: _import('msgsending/msgSendingOutline'),
+      component: () => import('@/views/msgsending/msgSendingOutline'),
       meta: { title: '概览', icon: 'table' }
     }, {
       path: 'singlegroup',
       name: 'msgSendingSingleGroup',
-      component: _import('msgsending/msgSendingSingleGroup'),
+      component: () => import('@/views/msgsending/msgSendingSingleGroup'),
       meta: { title: '单组', icon: 'table' }
     }, {
       path: 'singledevice',
       name: 'msgSendingSingleDevice',
-      component: _import('msgsending/msgSendingSingleDevice'),
+      component: () => import('@/views/msgsending/msgSendingSingleDevice'),
       meta: { title: '单设备', icon: 'table' }
     }]
   }, {
@@ -139,7 +141,7 @@ export const constantRouterMap = [
     children: [{
       name: 'feedbackList',
       path: 'feedbacklist',
-      component: _import('msg/FeedbackList'),
+      component: () => import('@/views/msg/FeedbackList'),
       meta: { title: '反馈消息', icon: 'table' }
     }]
   }, {
@@ -154,3 +156,4 @@ export default new Router({
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })
+

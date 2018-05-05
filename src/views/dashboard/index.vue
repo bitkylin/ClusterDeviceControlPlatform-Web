@@ -344,7 +344,7 @@
   }
 </script>
 
-<style scoped>
+<style rel="stylesheet/scss" lang="scss" scoped>
   #main-container {
     font-weight: bold;
     padding: 10px;

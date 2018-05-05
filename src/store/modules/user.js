@@ -45,7 +45,12 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
           const data = response.data
-          commit('SET_ROLES', data.role)
+          console.log('data', data)
+          if (data.role && data.role.length > 0) { // 验证返回的roles是否是一个非空数组
+            commit('SET_ROLES', data.role)
+          } else {
+            reject('getInfo: roles haha must be a non-null array !')
+          }
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
           resolve(response)
