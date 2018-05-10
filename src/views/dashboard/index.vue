@@ -93,6 +93,12 @@
             <td class="table-value" v-else v-bind:style="{ color: 'red' }">已关闭</td>
           </tr>
           <tr>
+            <td class="table-key">数据库认证</td>
+            <td class="table-value" v-if="serverSettingInfo.authMode" v-bind:style="{ color: 'green' }">已开启
+            </td>
+            <td class="table-value" v-else v-bind:style="{ color: 'red' }">已关闭</td>
+          </tr>
+          <tr>
             <td class="table-key">本地配置文件</td>
             <td class="table-value">{{serverSettingInfo.configFilePath}}</td>
           </tr>
@@ -137,8 +143,12 @@
             <td class="table-value">{{dataBaseInfo.ip}}</td>
           </tr>
           <tr>
-            <td class="table-key">数据库</td>
+            <td class="table-key">数据库名称</td>
             <td class="table-value">{{dataBaseInfo.database}}</td>
+          </tr>
+          <tr>
+            <td class="table-key">鉴权用户名</td>
+            <td class="table-value">{{dataBaseInfo.databaseUsername}}</td>
           </tr>
         </table>
         <div class="content-placeholder" v-else>待获取</div>
